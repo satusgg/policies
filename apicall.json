@@ -1,0 +1,41 @@
+{
+    "buildConfig": {
+      "runtime": "python310",
+      "entryPoint": "hello_auditlog",
+      "source": {
+        "storageSource": {
+          "bucket": "[Bucket name (which contains the source code)]",
+          "object": "[function_name]/function-source.zip"
+        }
+      },
+      "sourceProvenance": {
+        "resolvedStorageSource": {
+          "bucket": "[Bucket name (which contains the source code)]",
+          "object": "[function_name]/function-source.zip"
+        }
+      }
+    },
+    "serviceConfig": {
+      "timeoutSeconds": 60,
+      "maxInstanceCount": 8000,
+      "ingressSettings": "ALLOW_ALL",
+      "serviceAccountEmail": "[Your Service Account Email ]",
+      "availableMemory": "256Mi",
+      "allTrafficOnLatestRevision": true
+    },
+    "eventTrigger": {
+      "triggerRegion": "global",
+      "eventType": "google.cloud.audit.log.v1.written",
+      "eventFilters": [
+        {
+          "attribute": "serviceName",
+          "value": "storage.googleapis.com"
+        },
+        {
+          "attribute": "methodName",
+          "value": "storage.buckets.create"
+        }
+      ]
+    },
+    "environment": "GEN_2"
+}
