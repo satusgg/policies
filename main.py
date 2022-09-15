@@ -1,5 +1,6 @@
 import functions_framework
 from google.cloud import storage
+import time
 
 # CloudEvent function to be triggered by an Eventarc Cloud Audit Logging trigger
 # Note: this is NOT designed for second-party (Cloud Audit Logs -> Pub/Sub) triggers!
@@ -19,5 +20,11 @@ def hello_auditlog(cloudevent):
         if bucket.retention_period is None:
             # Setting the rettention period to the default one
             bucket.retention_period=retention_period
+            #Setting the bucket lock.
+            bucket.lock_retention_policy()
             # Patching the bucket
+            bucket.patch()
+            # Waits the lock to propagate
+            time.sleep(10)
+            bucket.lock_retention_policy()
             bucket.patch()
